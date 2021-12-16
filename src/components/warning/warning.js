@@ -18,31 +18,39 @@ import {
   InputRightElement,
   useToast
 } from '@chakra-ui/react'
-import { UseWalletState } from '../index';
+import { activateAccount } from '../../utils/create-account';
 
-export const Warning = () => {
-  const { logOutAccount, secretKey, setIsKeyCopied } = UseWalletState()
+export const Warning = ({publicKey, logOutAccount, secretKey, setIsKeyCopied}) => {
   const {hasCopied, onCopy} = useClipboard(secretKey);
   const toast = useToast();
-
   const inputStyle = {
     fontWeight: '600'
   }
 
-  const handleNextButton = () => {
-    if (hasCopied === false) {
+  const handleCopiedKey = async () => {
+    const {hash} = await activateAccount(publicKey)
+    
+    if (hasCopied === true) {
+      localStorage.setItem('keyCopied', true);
+      setIsKeyCopied(true)
       toast({
-        title: 'Error!',
-        description: "You can't go forward if you don't copy your secret key first.",
-        status: 'error',
+        title: 'Account created and funded!',
+        description: `Transaction hash: ${hash}`,
+        status: 'success',
         duration: 2900,
         isClosable: true,
       })
-    } else {
-      setIsKeyCopied(true)
-      console.log(hasCopied);
     }
   }
+
+  // const handleCopied = async () => {
+  //   localStorage.setItem('keyCopied', true);
+  //   const {hash} = await activateAccount(publicKey)
+
+  //   toast({
+  //     title: 
+  //   })
+  // }
 
   return(
     <Box
@@ -110,7 +118,8 @@ export const Warning = () => {
             </Link>
             <Link to='/account'>
               <Button 
-              onClick={handleNextButton} 
+              isDisabled={hasCopied === false ? true : false}
+              onClick={handleCopiedKey} 
               rightIcon={<ChevronRightIcon/>} 
               colorScheme='blue'>Next</Button>
             </Link>  

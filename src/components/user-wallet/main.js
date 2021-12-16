@@ -4,15 +4,12 @@
 import {Header} from './header';
 import {LayoutContent} from './layout-content';
 import {LayoutFooter} from './layout-footer';
-import { UseWalletState } from '../index';
 
-export const Main = () => {
-  const {logOutAccount, secretKey, publicKey, qrCode} = UseWalletState()
-
+export const Main = ({updateAccount, logOutAccount, secretKey, publicKey, qrCode, hash}) => {
   return(
     <>
       <Header logOutAccount={logOutAccount} secretKey={secretKey}/>
-      <LayoutContent publicKey={publicKey} qrCode={qrCode}/>
+      <LayoutContent  updateAccount={updateAccount} secretKey={secretKey} publicKey={publicKey} qrCode={qrCode} hash={hash}/>
       {/* <LayoutFooter/> */}
     </>  
   )

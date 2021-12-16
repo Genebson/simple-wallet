@@ -2,12 +2,12 @@ import {Heading, Text, Button, InputGroup, Input, useToast} from '@chakra-ui/rea
 import { useState } from 'react';
 import * as StellarSdk from 'stellar-sdk';
 import { Link } from 'react-router-dom';
-import { UseWalletState } from '../index';
-import * as createTestAccount from '../../utils/create-account';
+// import { UseWalletState } from '../index';
+import {createTestAccount} from '../../utils/create-account';
 
-export const Setup = () => {
-  const {setSecretKey, setPublickKey} = UseWalletState()
+export const Setup = ({setSecretKey, setPublickKey}) => {
   const [importSecretKey, setImportSecretKey] = useState('')
+  console.log(importSecretKey);
   const toast = useToast();
   const inputStyle = {
     fontWeight: '600'
@@ -32,14 +32,14 @@ export const Setup = () => {
   
   const importAccount = () => {
     const SECRET_KEY_LENGTH = 56;
-
+    console.log(importSecretKey);
     if (importSecretKey.length === SECRET_KEY_LENGTH) {
       const keyPair = StellarSdk.Keypair.fromSecret(importSecretKey);
 
       localStorage.setItem('public', keyPair.publicKey());
       localStorage.setItem('secret', importSecretKey);
 
-      setPublickKey(keyPair.publicKey);
+      setPublickKey(keyPair.publicKey());
       setSecretKey(importSecretKey);
         toast({
           title: 'Account created.',
@@ -84,7 +84,7 @@ export const Setup = () => {
         size='sm'
         onChange={handleSecretKey}
         value={importSecretKey}/>
-        {/* <Link to='/warning'> */}
+        <Link to='/warning'>
           <Button 
             onClick={importAccount} 
             colorScheme='teal' 
@@ -92,7 +92,7 @@ export const Setup = () => {
             mt={4} 
             ml={1}>Import
           </Button>
-        {/* </Link>   */}
+        </Link>  
       </InputGroup>
     </>
   )

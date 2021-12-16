@@ -6,17 +6,8 @@ export const sendPayment = async (secret, destinationId, amount) => {
   try {
     const sourceKeys = StellarSdk.Keypair.fromSecret(secret);
     await server.loadAccount(destinationId)
-    .catch((error) => {
-      if (error instanceOf StellarSdk.NotFoundError) {
-        throw new Error(`Oops, the account doesn't exists`)
-      } else {
-        return Error
-      }
-    })
-    .then() => {
-      const sourceAccount = await server.loadAccount(sourceKeys.publicKey());
-      return sourceAccount
-    }
+
+    const sourceAccount = await server.loadAccount(sourceKeys.publicKey());
 
     const transaction = new StellarSdk.TransactionBuilder(sourceAccount, {
       fee: StellarSdk.BASE_FEE,
@@ -26,13 +17,13 @@ export const sendPayment = async (secret, destinationId, amount) => {
         StellarSdk.Operation.payment({
           destination: destinationId,
           asset: StellarSdk.Asset.native(),
-          amount: "1000",
+          amount
         })
       )
       .setTimeout(180)
       .build();
       transaction.sign(sourceKeys)
-
+      console.log(transaction.toXDR())
       const result = await server.submitTransaction(transaction);
       return result;
   } catch (error) {
